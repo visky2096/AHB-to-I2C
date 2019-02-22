@@ -114,7 +114,8 @@ end
 2'b10 :                                     //NON SEQUENTIAL STATE 
 begin 	htrans=trans;
 	haddr=addr;
-	hwdata<=data;
+	temp_data<=data;
+	hwdata<=temp_data;
 	hsize=size;
 	hburst=burst;
 	hwrite=1'b1;
