@@ -78,7 +78,7 @@ begin
 	previous_hwrite=hwrite;
 
 end 
-if(Hreset==1 && hready==1 && hresp==0) // for sending the control signals and data 
+if(Hreset==1 && hready==0 && hresp==0) // for sending the control signals and data 
 begin 
 case (trans) 
 2'b00 :                                         //IDLE STATE
@@ -206,14 +206,14 @@ begin
 				htrans=trans; 
 				temp_addr=addr;
 				r=r^data;
-				for(i=0;i<4;i=i+1)
+				for(i=0;i<8;i=i+1)
 				begin 
 				haddr=temp_addr;
 				#3;
-				temp_addr=temp_addr+8;
-				temp_data<=r[0:7];
+				temp_addr=temp_addr+4;
+				temp_data<=r[0:3];
 				hwdata<=temp_data;
-				r=r>>8;
+				r=r>>4;
 				end 
 				hburst=burst;
 				hsize=size;
@@ -236,18 +236,18 @@ begin
 				temp_addr=addr;
 				r=r^data;
 				len=0;
-				for(i=0;i<4;i=i+1) // Number of bursts = 4 
+				for(i=0;i<8;i=i+1) // Number of bursts = 8 
 				begin 
 				if(len==32)begin len=0;haddr=temp_addr; end 
 				else 
 				begin
 				haddr=temp_addr; 
 				#3;
-				temp_addr=temp_addr+8;
-				temp_data<=r[0:7];
+				temp_addr=temp_addr+4;
+				temp_data<=r[0:3];
 				hwdata<=temp_data;
-				r=r>>8;
-				len=len+8;
+				r=r>>4;
+				len=len+4;
 				end  
 				end 	
 				hburst=burst;
@@ -261,7 +261,7 @@ begin
 				previous_hwrite=hwrite;
 
 			end 	
-			3'b001:                // Increment Burst of 16 beats 
+/*			3'b001:                // Increment Burst of 16 beats 
 			begin 	
 				r=32'h00000000;
 				htrans=trans; 
@@ -321,7 +321,7 @@ begin
 				previous_hwrite=hwrite;
 
 			end 	
-
+*/
 	
 	endcase
 end 		
@@ -329,7 +329,7 @@ end
 
 endcase 
 end
-if(Hreset==1 && hready==0 && hresp==0)
+if(Hreset==1 && hready==1 && hresp==0)
 begin
 htrans=previous_htrans;
 haddr=previous_haddr;
